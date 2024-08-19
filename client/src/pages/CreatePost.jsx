@@ -15,8 +15,41 @@ const CreatePost = () => {
 
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
+  const generateImage = async () => {
+    if (form.prompt) {
+      try {
+        setGeneratingImg(true);
+        const response = await fetch(`http://localhost:8000/api/v1/dalle`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: form.prompt }),
+        });
 
-  const generateImage = () => {};
+        // Check if the response is JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          setForm({
+            ...form,
+            photo: `data:image/jpeg;base64,${data.photo}`,
+          });
+        } else {
+          // Handle non-JSON response
+          const errorText = await response.text();
+          alert(`Failed to generate image: ${errorText}`);
+        }
+      } catch (error) {
+        alert("An unexpected error occurred: " + error.message);
+      } finally {
+        setGeneratingImg(false);
+      }
+    } else {
+      alert("Please enter a prompt");
+    }
+  };
+
   const handleSubmit = () => {};
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -78,7 +111,6 @@ const CreatePost = () => {
             )}
           </div>
         </div>
-        
 
         <div className="mt-5 flex gap-5">
           <button
