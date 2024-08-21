@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { preview } from "../assets";
 import { FormField, Loader } from "../components";
 import { getRandomPrompt } from "../utils";
@@ -15,6 +14,7 @@ const CreatePost = () => {
 
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const generateImage = async () => {
     if (form.prompt) {
       try {
@@ -27,18 +27,17 @@ const CreatePost = () => {
           body: JSON.stringify({ prompt: form.prompt }),
         });
 
-        // Check if the response is JSON
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
+        const data = await response.json();
+
+        const imageUrl = data.result.images[0].url;
+
+        if (imageUrl) {
           setForm({
             ...form,
-            photo: `data:image/jpeg;base64,${data.photo}`,
+            photo: imageUrl,
           });
         } else {
-          // Handle non-JSON response
-          const errorText = await response.text();
-          alert(`Failed to generate image: ${errorText}`);
+          alert("Failed to generate image");
         }
       } catch (error) {
         alert("An unexpected error occurred: " + error.message);
@@ -50,10 +49,36 @@ const CreatePost = () => {
     }
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (form.prompt && form.photo) {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:8000/api/v1/post`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...form }),
+        });
+
+        await response.json();
+        navigate("/");
+      } catch (error) {
+        alert("An unexpected error occurred: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert("Please enter a prompt and generate an image");
+    }
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
   const handleSurpriseMe = () => {
     const randomPrompt = getRandomPrompt(form.prompt);
     setForm({ ...form, prompt: randomPrompt });
@@ -76,7 +101,7 @@ const CreatePost = () => {
             type="text"
             name="name"
             placeholder="John Doe"
-            value={form.name}
+            value={form.name} // Corrected: Use form.name instead of a static value
             handleChange={handleChange}
           />
           <FormField
@@ -115,13 +140,13 @@ const CreatePost = () => {
         <div className="mt-5 flex gap-5">
           <button
             type="button"
-            className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 p-2.5 text-center"
+            className="text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 p-2.5 text-center"
             onClick={generateImage}
           >
-            {generatingImg ? "Generating...." : "Generate...."}
+            {generatingImg ? "Generating..." : "Generate"}
           </button>
         </div>
-        <div className=" mt-10">
+        <div className="mt-10">
           <p className="mt-10 text-[#666e75] text-[14px]">
             Once you have created the image you want, you can share it with
             others in the community
@@ -130,7 +155,7 @@ const CreatePost = () => {
             type="submit"
             className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
           >
-            {loading ? "Sharing" : " Share with the community"}
+            {loading ? "Sharing..." : "Share with the community"}
           </button>
         </div>
       </form>

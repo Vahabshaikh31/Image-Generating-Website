@@ -1,39 +1,43 @@
 import express from "express";
 import * as dotenv from "dotenv";
-import { OpenAI } from "openai";
+import * as fal from "@fal-ai/serverless-client";
 
 dotenv.config();
 
 const router = express.Router();
+
 if (!process.env.OPENAI_API_KEY) {
   console.log("Key not available");
 }
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+
+fal.config({
+  credentials: process.env.fal_ai_KEY,
 });
 
 router.route("/").get((req, res) => {
   res.send("Hello From DALL-E !");
 });
 
-// Example route to demonstrate OpenAI usage
 router.route("/").post(async (req, res) => {
   try {
     const { prompt } = req.body;
-    const response = await openai.images.generate({
-      prompt,
-      n: 1,
-      size: "1024x1024",
-      response_format: "b64_json",
+
+    const result = await fal.subscribe("fal-ai/lora", {
+      input: {
+        model_name: "stabilityai/stable-diffusion-xl-base-1.0",
+        prompt,
+      },
+      logs: true,
     });
-    const image = response.data.data[0].b64_json;
-    res.status(200).json({ photo: image });
+
+    res.json({ message: "Image generation complete", result });
   } catch (error) {
-    console.error("Error generating image:", error);
-    // Send the error message as JSON
+    console.error("Error during image generation:", error);
+
     res
-      .status(500)
-      .json({ error: "An error occurred while generating the image." });
+      .status(error.status || 500)
+      .json({ error: error.message, details: error.body });
   }
 });
+
 export default router;
