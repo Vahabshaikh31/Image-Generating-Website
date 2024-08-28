@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./mongodb/connect.js";
 import postRoutes from "./routes/postRoutes.js";
+import geminiRoutes from "./routes/geminiRoutes.js";
 import dalleRoutes from "./routes/dalleRoutes.js";
 const port = process.env.PORT || 8000;
 dotenv.config();
@@ -13,6 +14,7 @@ app.use(express.json({ limit: "50mb" }));
 
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/dalle", dalleRoutes);
+app.use("/api/v1/gemini", geminiRoutes);
 
 app.get("/", async (req, res) => {
   res.send("Hello from DALL-E");
