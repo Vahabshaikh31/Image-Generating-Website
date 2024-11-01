@@ -5,7 +5,7 @@ import connectDB from "./mongodb/connect.js";
 import postRoutes from "./routes/postRoutes.js";
 import geminiRoutes from "./routes/geminiRoutes.js";
 import dalleRoutes from "./routes/dalleRoutes.js";
-const port = process.env.PORT || 8000;
+
 dotenv.config();
 
 const app = express();
@@ -24,7 +24,7 @@ const startServer = async () => {
   try {
     await connectDB(process.env.MONGODB_URL);
     app.listen(
-      port,
+      8000,
       () => console.log(`Server running on http://localhost:8000`) // Updated port number in the message
     );
   } catch (error) {
