@@ -1,42 +1,88 @@
+/* Root container */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  background-color: #121212;
+  /* Dark background */
+  color: #f0f0f0;
+  /* Light text for contrast */
 }
 
+/* Logo Styling */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #bb86fcaa);
+  /* Purple glow for hover */
 }
 
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+  /* React color hover effect */
+}
+
+/* Spin animation for logo */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
+/* Spin animation for those who don't prefer reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Card styling */
 .card {
   padding: 2em;
+  background-color: #1e1e1e;
+  /* Dark background for cards */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Soft shadow */
+  color: #f0f0f0;
+  /* Light text for contrast */
 }
 
+/* Read the Docs Section */
 .read-the-docs {
-  color: #888;
+  color: #888888;
+  /* Light gray text */
+}
+
+/* Link Styling */
+a {
+  color: #bb86fc;
+  /* Purple links to fit dark theme */
+}
+
+a:hover {
+  color: #bb86fc;
+  text-decoration: underline;
+  /* Underline on hover */
+}
+
+/* Scrollbar Customization for Dark Mode */
+.prompt::-webkit-scrollbar {
+  width: 5px;
+}
+
+.prompt::-webkit-scrollbar-thumb {
+  background-color: #666e75;
+  /* Dark scrollbar thumb */
+  border-radius: 5px;
 }

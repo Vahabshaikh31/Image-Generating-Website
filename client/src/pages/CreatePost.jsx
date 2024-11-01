@@ -11,6 +11,7 @@ const CreatePost = () => {
     prompt: "",
     photo: "",
   });
+  const [Msg, setMsg] = useState(false);
 
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ const CreatePost = () => {
         }
       } catch (error) {
         alert("An unexpected error occurred: " + error.message);
+        setMsg(true);
       } finally {
         setGeneratingImg(false);
       }
@@ -72,7 +74,7 @@ const CreatePost = () => {
         await response.json();
         navigate("/");
       } catch (error) {
-        alert("An unexpected error occurred: " + error.message);
+        alert("Sorry Currently out Of Credits");
       } finally {
         setLoading(false);
       }
@@ -91,12 +93,15 @@ const CreatePost = () => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto">
+    <section className="max-w-full p-3 sm:px-0 md:px-10 lg:px-20 mx-auto bg-black">
       <div>
-        <h1 className="font-extrabold text-[#222328] text-[32px]">Create</h1>
-        <p className="mt-2 text-[#666e75] text-[16px] max-w-[500px]">
+        <h1 className="font-extrabold text-[#fff] text-[32px]">Create</h1>
+        <p className="mt-2 text-[#fff] text-[16px] max-w-[500px]">
           Create imaginative and visually stunning images through DALL-E AI and
           share them with the community.
+        </p>
+        <p className="text-red-700">
+          {Msg && <h1>Sorry Currently out Of Credits</h1>}
         </p>
       </div>
 
@@ -121,7 +126,7 @@ const CreatePost = () => {
             handleSurpriseMe={handleSurpriseMe}
           />
 
-          <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
+          <div className="relative bg-slate-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
             {form.photo ? (
               <img
                 src={form.photo}
@@ -153,7 +158,7 @@ const CreatePost = () => {
           </button>
         </div>
         <div className="mt-10">
-          <p className="mt-10 text-[#666e75] text-[14px]">
+          <p className="mt-10 text-[#fff] text-[14px]">
             Once you have created the image you want, you can share it with
             others in the community
           </p>

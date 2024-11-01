@@ -1,14 +1,11 @@
-import { useState } from "react";
-import { Loader } from "../components";
+import { useState, useEffect, useRef } from "react";
 
 const ChatBot = () => {
   const [data, setData] = useState({
-    messages: [
-      { id: 1, message: "Hello! I'm here to help you.", type: "Bot" },
-    
-    ],
+    messages: [{ id: 1, message: "Hello! I'm here to help you.", type: "Bot" }],
   });
   const [value, setValue] = useState("");
+  const messagesEndRef = useRef(null); // Reference for scrolling to the bottom
 
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -33,12 +30,11 @@ const ChatBot = () => {
 
       setData((prevData) => ({
         ...prevData,
-        messages: [
+        messages: [ 
           ...prevData.messages,
           { id: Date.now(), message: botMessage, type: "Bot" },
         ],
       }));
-      
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -62,12 +58,10 @@ const ChatBot = () => {
     fetchData();
   };
 
-  // Function to render formatted text
   const renderFormattedMessage = (message) => {
     const boldPattern = /\*\*(.*?)\*\*/g;
     const bulletPattern = /\*(.*?)\*/g;
 
-    // Replace bold and bullets with HTML elements
     const formattedMessage = message
       .replace(boldPattern, "<strong>$1</strong>")
       .replace(bulletPattern, "<li>$1</li>");
@@ -75,42 +69,48 @@ const ChatBot = () => {
     return <div dangerouslySetInnerHTML={{ __html: formattedMessage }} />;
   };
 
+  // Scroll to the bottom of the messages when new message is added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [data.messages]);
+
   return (
-    <div className="max-w-7xl mx-auto relative flex items-center justify-center flex-col p-5 rounded-lg shadow-lg">
-      <h1 className="text-4xl mb-2">Futuristic ChatBot</h1>
-      <div className="bg-gray-800 p-4 rounded-lg w-full  h-[70vh] overflow-auto max-w-2xl">
+    <div className="max-w-full bg-black mx-auto relative flex items-center justify-center flex-col p-5 overflow-hidden rounded-lg shadow-lg">
+      <h1 className="text-4xl mb-4 text-white">Futuristic ChatBot</h1>
+      <div className="bg-gray-800 p-4 rounded-lg w-full h-[70vh] overflow-auto max-w-2xl shadow-md">
         <div className="flex flex-col space-y-4">
           {data.messages.map((curr) => (
             <div
               key={curr.id}
-              className={`p-3 rounded-lg ${
+              className={`p-3 rounded-lg transition-all duration-300 ${
                 curr.type === "Bot"
                   ? "text-gray-300 bg-gray-700"
-                  : "text-white bg-gray-600 ml-auto"
+                  : "text-white bg-blue-600 ml-auto"
               } max-w-sm`}
             >
               {curr.type === "Bot" ? "Bot: " : "You: "}
-              {  renderFormattedMessage(curr.message)}
+              {renderFormattedMessage(curr.message)}
             </div>
           ))}
+          <div ref={messagesEndRef} /> {/* Reference for scrolling */}
         </div>
-          </div>
-        <div className="flex mt-5">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            value={value}
-            onChange={handleChange}
-            name="text"
-            className="p-2 border rounded-l-lg w-full bg-gray-700 border-gray-600 text-white focus:outline-none"
-          />
-          <button
-            className="p-2 py-1 rounded-r-lg text-white bg-blue-500 hover:bg-blue-600"
-            onClick={handleClick}
-          >
-            Send
-          </button>
-        </div>
+      </div>
+      <div className="flex max-w-46 mt-4 overflow-hidden">
+        <input
+          type="text"
+          placeholder="Type your message..."
+          value={value}
+          onChange={handleChange}
+          name="text"
+          className="p-3 border rounded-l-lg w-full bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring focus:ring-blue-500"
+        />
+        <button
+          className="p-3 rounded-r-lg text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+          onClick={handleClick}
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 };
