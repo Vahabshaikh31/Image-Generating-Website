@@ -13,13 +13,16 @@ const ChatBot = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/gemini`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: value }), // Send 'prompt' in request body
-      });
+      const response = await fetch(
+        `https://imagegeneratingwebsite.onrender.com/api/v1/gemini`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: value }), // Send 'prompt' in request body
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,7 +33,7 @@ const ChatBot = () => {
 
       setData((prevData) => ({
         ...prevData,
-        messages: [ 
+        messages: [
           ...prevData.messages,
           { id: Date.now(), message: botMessage, type: "Bot" },
         ],
