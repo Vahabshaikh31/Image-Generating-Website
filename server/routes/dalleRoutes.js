@@ -29,7 +29,10 @@ router.route("/").post(async (req, res) => {
       },
       logs: true,
     });
-
+    var msg = "Currently Out Of Creadits";
+    if (result === null) {
+      res.json({ message: "Image generation incomplete", msg });
+    }
     res.json({ message: "Image generation complete", result });
   } catch (error) {
     console.error("Error during image generation:", error);

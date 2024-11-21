@@ -21,7 +21,8 @@ const CreatePost = () => {
       try {
         setGeneratingImg(true);
         const response = await fetch(
-          `https://imagegeneratingwebsite.onrender.com/api/v1/dalle`,
+          // `https://imagegeneratingwebsite.onrender.com/api/v1/dalle`,
+          `https://localhost/api/v1/dalle`,
           {
             method: "POST",
             headers: {

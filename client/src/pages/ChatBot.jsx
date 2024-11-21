@@ -14,7 +14,8 @@ const ChatBot = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `https://imagegeneratingwebsite.onrender.com/api/v1/gemini`,
+        // `https://imagegeneratingwebsite.onrender.com/api/v1/gemini`,
+        `http://localhost:8000/api/v1/gemini`,
         {
           method: "POST",
           headers: {
@@ -29,7 +30,7 @@ const ChatBot = () => {
       }
 
       const rs = await response.json();
-      const botMessage = rs.data;
+      const botMessage = await rs.data;
 
       setData((prevData) => ({
         ...prevData,
